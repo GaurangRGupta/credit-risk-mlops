@@ -1,0 +1,9 @@
+.venv
+.git
+mlruns
+mlflow.db
+data
+__pycache__
+tests
+terraform
+k8s
