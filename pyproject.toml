@@ -20,7 +20,10 @@ dependencies = [
 [dependency-groups]
 dev = [
     "flake8>=7.5.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.11.2",
     "pytest>=9.2.0",
+    "seaborn>=0.13.2",
 ]
 
 [tool.uv]
