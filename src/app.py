@@ -4,7 +4,7 @@ from pathlib import Path
 
 import joblib
 import pandas as pd
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 
 MODEL_PATH = Path("models/model.joblib")
@@ -19,9 +19,20 @@ LATENCY = Histogram("prediction_latency_seconds", "Prediction latency")
 app = Flask(__name__)
 
 
+_pre = model.named_steps["pre"]
+_cat = dict(zip(_pre.transformers_[1][2], _pre.named_transformers_["cat"].categories_))
+CAT_OPTIONS = {c: [str(v) for v in vals] for c, vals in _cat.items()}
+NUM_FIELDS = [f for f in FEATURES if f not in CAT_OPTIONS]
+
+
 @app.get("/")
 def home():
     REQUESTS.labels("/").inc()
+    return render_template("index.html", cat_options=CAT_OPTIONS, num_fields=NUM_FIELDS)
+
+
+@app.get("/api")
+def api_info():
     return jsonify(service="credit-risk-api", endpoints=["/health", "/predict", "/metrics"])
 
 

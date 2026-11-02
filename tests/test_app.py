@@ -32,3 +32,9 @@ def test_predict_missing_fields(client):
 def test_metrics(client):
     client.post("/predict", json=SAMPLE)
     assert b"predictions_total" in client.get("/metrics").data
+
+
+def test_ui_page(client):
+    r = client.get("/")
+    assert r.status_code == 200
+    assert b"Credit Risk Predictor" in r.data
